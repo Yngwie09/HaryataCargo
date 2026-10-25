@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "619052895901",
+    "project_id": "aplikasi-kurir-63616",
+    "storage_bucket": "aplikasi-kurir-63616.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:619052895901:android:5f0c86e42f863025a5ce74",
+        "android_client_info": {
+          "package_name": "om.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCsP24Lx_NxYIybtd5VcRZd3Julitg7Eg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
