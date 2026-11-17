@@ -1,23 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'screens/login_page.dart'; // Perbaikan path import yang benar
+import 'app.dart';
+import 'services/backend_client.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Aplikasi Kurir PT. Haryata Cargo',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: LoginPage(), // Menghilangkan kata 'const' agar tidak error
+  if (const bool.fromEnvironment('PREVIEW_MODE')) {
+    runApp(const CargoApp(preview: true));
+    return;
+  }
+  try {
+    await CargoAuth.instance.initialize();
+    runApp(const CargoApp());
+  } catch (error) {
+    runApp(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(32),
+              child: SelectableText(
+                'Aplikasi belum dapat dimulai.\nPeriksa koneksi internet dan konfigurasi layanan.\n\n$error',
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

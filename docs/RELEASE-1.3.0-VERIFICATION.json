@@ -1,0 +1,61 @@
+{
+  "version": "1.3.0",
+  "at": "2026-10-31T11:05:15.82Z",
+  "endpoint": "https://haryata-api-production.up.railway.app",
+  "users": 6,
+  "couriers": [
+    "princeugha",
+    "chasy",
+    "wonzz",
+    "yngganz",
+    "neoaja"
+  ],
+  "shipments": 15,
+  "counts": {
+    "Pending": 11,
+    "Proses": 0,
+    "Tertunda": 2,
+    "Selesai": 0,
+    "Retur": 1,
+    "Batal": 1
+  },
+  "allSixLoginsVerified": true,
+  "courierHistoryVerified": true,
+  "singleCharacterPasswordVerified": true,
+  "maintenanceDisabled": true,
+  "apk": {
+    "file": "HaryataCargo-1.3.0-arm64.apk",
+    "versionName": "1.3.0",
+    "versionCode": 4,
+    "package": "id.haryata.cargo",
+    "minSdk": 24,
+    "targetSdk": 36,
+    "bytes": 119890790,
+    "sha256": "51b854cc904f65e9893f5bfa89c070b88183f634d3c6c3c6e9916ac8a9e036f6",
+    "certificateSha1": "33:C4:3F:AA:63:CD:19:AB:F5:0C:B0:C6:DB:2B:28:16:C2:8B:2C:6F",
+    "mapsKeyEmbedded": true,
+    "signatureVerified": true,
+    "build": "debug",
+    "realtimeCodeEmbedded": true,
+    "flutterEngineLibraries": [
+      "lib/arm64-v8a/libflutter.so"
+    ]
+  },
+  "realtime": {
+    "transport": "authenticated SSE",
+    "initialSnapshotVerified": true,
+    "unauthenticatedRejected": true,
+    "courierStreamRejected": true,
+    "sessionRevocationVerified": true,
+    "gpsRequestedIntervalSeconds": 2,
+    "serverSnapshotIntervalSeconds": 1,
+    "markerInterpolationMilliseconds": 1800,
+    "physicalPhoneGpsVerified": false
+  },
+  "tests": {
+    "flutter": 71,
+    "backend": 18,
+    "liveWorkflowGroups": 14,
+    "analyzer": "No issues found"
+  }
+}

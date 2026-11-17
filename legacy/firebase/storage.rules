@@ -1,0 +1,17 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function profile() { return firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data; }
+    function active() { return request.auth != null && profile().active == true; }
+    match /proofs/{uid}/{shipmentId}/{batch}/{filename} {
+      function shipment() { return firestore.get(/databases/(default)/documents/shipments/$(shipmentId)).data; }
+      allow read: if active() && (profile().role == 'admin' || (request.auth.uid == uid && shipment().courierId == uid));
+      allow create: if active() && profile().role == 'kurir' && request.auth.uid == uid
+        && shipment().courierId == uid && shipment().status == 'Proses'
+        && batch.matches('^[0-9]+$') && filename.matches('^(receipt|recipient|parcel)\\.(jpg|png)$')
+        && request.resource.size > 0 && request.resource.size <= 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/(jpeg|png)');
+      allow update, delete: if false;
+    }
+  }
+}

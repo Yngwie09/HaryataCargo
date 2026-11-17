@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Flutter Application 1</string>
+	<string>Haryata Cargo</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -28,6 +28,10 @@
 	<true/>
 	<key>GMSApiKey</key>
 	<string>$(GOOGLE_MAPS_API_KEY)</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Kamera digunakan untuk foto tanda terima, penerima, dan barang sebagai bukti serah terima.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Pilih foto bukti serah terima pengiriman dari galeri.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Lokasi digunakan untuk memperbarui posisi kurir selama pengantaran.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>

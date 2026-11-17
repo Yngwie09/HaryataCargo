@@ -1,141 +1,157 @@
+import '../widgets/password_dialog.dart';
+import '../services/backend_client.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'login_page.dart';
+import 'package:geolocator/geolocator.dart';
+import '../core/ui.dart';
+import '../services/session_service.dart';
+import 'tracking_diagnostics_page.dart';
 
 class SettingsPage extends StatelessWidget {
-  const SettingsPage({super.key});
-
-  void _logout(BuildContext context) async {
-    await FirebaseAuth.instance.signOut();
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginPage()),
-      (route) => false,
-    );
-  }
-
+  const SettingsPage({super.key, this.courier = false});
+  final bool courier;
   @override
   Widget build(BuildContext context) {
-    final User? currentUser = FirebaseAuth.instance.currentUser;
-
+    final user = CargoAuth.instance.currentUser;
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
-      appBar: AppBar(
-        title: const Text('Pengaturan', style: TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: const Color(0xFF1E3A8A),
-        foregroundColor: Colors.white,
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16.0),
-        children: [
-          // Informasi Akun Section
-          const Text(
-            'Informasi Akun',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF64748B)),
-          ),
-          const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(color: Colors.blue.withOpacity(0.06), blurRadius: 8, offset: const Offset(0, 3)),
-              ],
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF1E3A8A).withOpacity(0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(Icons.admin_panel_settings, color: Color(0xFF1E3A8A)),
+      appBar: AppBar(title: const Text('Profil & pengaturan')),
+      body: PageBody(
+        width: 760,
+        child: ListView(
+          padding: const EdgeInsets.all(24),
+          children: [
+            Card(
+              child: ListTile(
+                contentPadding: const EdgeInsets.all(20),
+                leading: const CircleAvatar(child: Icon(Icons.person_outline)),
+                title: Text(user?.email ?? 'Akun'),
+                subtitle: Text(
+                  courier
+                      ? 'Kurir Haryata Cargo'
+                      : 'Administrator Haryata Cargo',
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Logged in as Admin',
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Keamanan akun',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 12),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.lock_reset),
+                title: const Text('Ubah kata sandi'),
+                subtitle: const Text('Ganti kata sandi akun Anda'),
+                onTap: () => showPasswordDialog(context),
+              ),
+            ),
+            if (courier) ...[
+              const SizedBox(height: 20),
+              Text(
+                'Lokasi & pengantaran',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 12),
+              Card(
+                child: Column(
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.troubleshoot),
+                      title: const Text('Periksa pelacakan'),
+                      subtitle: const Text(
+                        'Uji GPS, akses server, dan posisi yang diterima server',
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        currentUser?.email ?? 'admin@haryata.com',
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Color(0xFF1E293B)),
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const TrackingDiagnosticsPage(),
+                        ),
                       ),
-                    ],
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.location_on_outlined),
+                      title: const Text('Izin lokasi aplikasi'),
+                      subtitle: const Text(
+                        'Aktifkan lokasi akurat. Izinkan akses sepanjang waktu agar pengantaran dapat dipantau di latar belakang.',
+                      ),
+                      onTap: () => Geolocator.openAppSettings(),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.gps_fixed),
+                      title: const Text('Pengaturan GPS perangkat'),
+                      onTap: () => Geolocator.openLocationSettings(),
+                    ),
+                  ],
+                ),
+              ),
+              const Card(
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Text(
+                    'Saat mengantar, biarkan aplikasi berjalan dan koneksi internet aktif. Jangan paksa berhenti aplikasi. Jika perangkat membatasi baterai, izinkan aktivitas latar belakang. Gunakan Pulihkan pada beranda bila pelacakan bermasalah.',
                   ),
                 ),
-              ],
+              ),
+            ],
+            const SizedBox(height: 20),
+            Text(
+              'Panduan operasional',
+              style: Theme.of(context).textTheme.titleLarge,
             ),
-          ),
-          const SizedBox(height: 24),
-
-          // Pengaturan Aplikasi / Sistem
-          const Text(
-            'Sistem & Aplikasi',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF64748B)),
-          ),
-          const SizedBox(height: 8),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(color: Colors.blue.withOpacity(0.06), blurRadius: 8, offset: const Offset(0, 3)),
-              ],
-            ),
-            child: Column(
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.info_outline, color: Color(0xFF1E3A8A)),
-                  title: const Text('Tentang Aplikasi', style: TextStyle(fontWeight: FontWeight.w600)),
-                  subtitle: const Text('PT. Haryata Cargo v1.0.0 (Skripsi)'),
-                  onTap: () {
-                    showAboutDialog(
-                      context: context,
-                      applicationName: 'Haryata Cargo Mobile',
-                      applicationVersion: '1.0.0',
-                      applicationLegalese: '© 2026 PT. Haryata Cargo',
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.only(top: 10),
-                          child: Text('Aplikasi manajemen logistik berbasis mobile dengan sistem Role-Based Access Control (RBAC).'),
-                        )
-                      ],
-                    );
-                  },
+            const SizedBox(height: 12),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Text(
+                  courier
+                      ? '1. Buka paket yang ditugaskan kepada Anda.\n2. Pilih Mulai pengantaran dan izinkan lokasi.\n3. Tunda dan laporkan kendala jika terjadi hambatan.\n4. Saat tiba, lengkapi nama penerima serta foto tanda terima, penerima, dan barang.\n5. Simpan bukti untuk menyelesaikan pengiriman.'
+                      : '1. Buat akun kurir melalui Kelola kurir.\n2. Buat pengiriman dan pilih kurir penanggung jawab.\n3. Pantau lokasi melalui Pantau kurir.\n4. Periksa status, riwayat, dan bukti foto pada detail pengiriman.\n5. Gunakan Laporan untuk rekap dan ekspor periode.',
                 ),
-                const Divider(height: 1),
-                ListTile(
-                  leading: const Icon(Icons.security, color: Color(0xFF1E3A8A)),
-                  title: const Text('Keamanan & Sesi', style: TextStyle(fontWeight: FontWeight.w600)),
-                  subtitle: const Text('Firebase Authentication Active'),
-                  onTap: () {},
+              ),
+            ),
+            const Card(
+              child: Padding(
+                padding: EdgeInsets.all(20),
+                child: Text(
+                  'Pengiriman dalam satu genggaman\n\nKelola penugasan, pantau perjalanan kurir, dan simpan bukti serah terima dengan mudah. Pastikan informasi penerima dan alamat selalu lengkap sebelum memulai pengantaran.',
                 ),
-              ],
+              ),
             ),
-          ),
-          const SizedBox(height: 24),
-
-          // Tombol Keluar
-          ElevatedButton.icon(
-            onPressed: () => _logout(context),
-            icon: const Icon(Icons.logout_rounded),
-            label: const Text('Keluar dari Akun'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red[50],
-              foregroundColor: Colors.red,
-              elevation: 0,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            const SizedBox(height: 20),
+            OutlinedButton.icon(
+              onPressed: () => showAboutDialog(
+                context: context,
+                applicationName: 'Haryata Cargo',
+                applicationVersion: '1.3.0',
+                applicationLegalese: '© 2026 PT. Haryata Cargo',
+                children: const [
+                  Text(
+                    'Sistem penugasan, pelacakan kurir, dan dokumentasi serah terima pengiriman.',
+                  ),
+                ],
+              ),
+              icon: const Icon(Icons.info_outline),
+              label: const Text('Tentang aplikasi'),
             ),
-          ),
-        ],
+            const SizedBox(height: 16),
+            FilledButton.icon(
+              onPressed: () async {
+                try {
+                  await SessionService.logout();
+                  if (context.mounted) {
+                    Navigator.popUntil(context, (r) => r.isFirst);
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    notify(context, errorText(e), error: true);
+                  }
+                }
+              },
+              icon: const Icon(Icons.logout),
+              label: const Text('Keluar dari akun'),
+            ),
+          ],
+        ),
       ),
     );
   }

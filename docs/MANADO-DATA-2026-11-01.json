@@ -1,0 +1,107 @@
+{
+  "at": "2026-10-31T20:00:26.139Z",
+  "schema": 2,
+  "contactsUpdated": 15,
+  "city": "Manado",
+  "operationalFieldsPreserved": true,
+  "onlyExistingFiveCouriersAssigned": true,
+  "assignments": {
+    "princeugha": 3,
+    "chasy": 3,
+    "wonzz": 3,
+    "yngganz": 3,
+    "neoaja": 3
+  },
+  "contacts": [
+    {
+      "resi": "HC-20261031-0001",
+      "penerima": "Michael Runtuwene",
+      "alamat": "Jl. Sam Ratulangi No. 18, Kota Manado, Sulawesi Utara",
+      "kurir": "princeugha"
+    },
+    {
+      "resi": "HC-20261031-0002",
+      "penerima": "Claudia Wenas",
+      "alamat": "Jl. Piere Tendean No. 42, Kota Manado, Sulawesi Utara",
+      "kurir": "chasy"
+    },
+    {
+      "resi": "HC-20261031-0003",
+      "penerima": "Steven Warouw",
+      "alamat": "Jl. Ahmad Yani No. 10, Kota Manado, Sulawesi Utara",
+      "kurir": "wonzz"
+    },
+    {
+      "resi": "HC-20261031-0004",
+      "penerima": "Angelina Paat",
+      "alamat": "Jl. R. W. Monginsidi No. 75, Kota Manado, Sulawesi Utara",
+      "kurir": "yngganz"
+    },
+    {
+      "resi": "HC-20261031-0005",
+      "penerima": "Christian Mandagi",
+      "alamat": "Jl. 17 Agustus No. 120, Kota Manado, Sulawesi Utara",
+      "kurir": "neoaja"
+    },
+    {
+      "resi": "HC-20261031-0006",
+      "penerima": "Nathania Lumentut",
+      "alamat": "Jl. Babe Palar No. 31, Kota Manado, Sulawesi Utara",
+      "kurir": "princeugha"
+    },
+    {
+      "resi": "HC-20261031-0007",
+      "penerima": "Ricky Sumual",
+      "alamat": "Jl. Diponegoro No. 16, Kota Manado, Sulawesi Utara",
+      "kurir": "chasy"
+    },
+    {
+      "resi": "HC-20261031-0008",
+      "penerima": "Jessica Tumbel",
+      "alamat": "Jl. D. I. Panjaitan No. 88, Kota Manado, Sulawesi Utara",
+      "kurir": "wonzz"
+    },
+    {
+      "resi": "HC-20261031-0009",
+      "penerima": "Daniel Roring",
+      "alamat": "Jl. Sam Ratulangi No. 57, Kota Manado, Sulawesi Utara",
+      "kurir": "yngganz"
+    },
+    {
+      "resi": "HC-20261031-0010",
+      "penerima": "Gracia Mambu",
+      "alamat": "Jl. Pumorow No. 29, Kota Manado, Sulawesi Utara",
+      "kurir": "neoaja"
+    },
+    {
+      "resi": "HC-20261031-0011",
+      "penerima": "Andre Sondakh",
+      "alamat": "Jl. Tikala Ares No. 23, Kota Manado, Sulawesi Utara",
+      "kurir": "princeugha"
+    },
+    {
+      "resi": "HC-20261031-0012",
+      "penerima": "Michelle Rantung",
+      "alamat": "Jl. Santiago No. 61, Kota Manado, Sulawesi Utara",
+      "kurir": "chasy"
+    },
+    {
+      "resi": "HC-20261031-0013",
+      "penerima": "Kevin Waworuntu",
+      "alamat": "Jl. Yos Sudarso No. 37, Kota Manado, Sulawesi Utara",
+      "kurir": "wonzz"
+    },
+    {
+      "resi": "HC-20261031-0014",
+      "penerima": "Gabriella Moniaga",
+      "alamat": "Jl. A. A. Maramis No. 12, Kota Manado, Sulawesi Utara",
+      "kurir": "yngganz"
+    },
+    {
+      "resi": "HC-20261031-0015",
+      "penerima": "Samuel Pinontoan",
+      "alamat": "Jl. Ring Road No. 46, Kota Manado, Sulawesi Utara",
+      "kurir": "neoaja"
+    }
+  ]
+}

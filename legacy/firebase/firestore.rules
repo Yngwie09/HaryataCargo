@@ -1,0 +1,106 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signed() { return request.auth != null; }
+    function profile() { return get(/databases/$(database)/documents/users/$(request.auth.uid)).data; }
+    function active() { return signed() && profile().active == true; }
+    function admin() { return active() && profile().role == 'admin'; }
+    function courier() { return active() && profile().role == 'kurir'; }
+    function text(value, min, max) { return value is string && value.size() >= min && value.size() <= max; }
+    function assigned(data) { return courier() && data.courierId == request.auth.uid; }
+    function validCourier(uid) {
+      let p = get(/databases/$(database)/documents/users/$(uid)).data;
+      return p.role == 'kurir' && p.active == true;
+    }
+    function validFields(d) {
+      return text(d.penerima, 1, 120) && text(d.alamat, 1, 1000)
+        && text(d.sender, 1, 120) && text(d.phone, 8, 20)
+        && text(d.notes, 0, 1000) && d.weight is number && d.weight > 0 && d.weight <= 100000
+        && d.pieces is int && d.pieces > 0 && d.pieces <= 10000
+        && d.courierId is string && validCourier(d.courierId)
+        && d.courierEmail == get(/databases/$(database)/documents/users/$(d.courierId)).data.email;
+    }
+    match /users/{uid} {
+      allow get: if signed() && (request.auth.uid == uid || admin());
+      allow list: if admin();
+      // Auth accounts, activation, and roles are managed exclusively on the server.
+      allow create, delete: if false;
+      allow update: if admin() && resource.data.role == 'kurir'
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'phone', 'updatedAt'])
+        && text(request.resource.data.name, 2, 120) && text(request.resource.data.phone, 8, 20)
+        && request.resource.data.updatedAt == request.time;
+    }
+    match /resi_index/{resi} {
+      allow get: if admin();
+      allow list, update, delete: if false;
+      allow create: if admin() && resi.matches('^[A-Z0-9-]{4,40}$')
+        && request.resource.data.keys().hasOnly(['shipmentId', 'createdAt'])
+        && request.resource.data.createdAt == request.time
+        && getAfter(/databases/$(database)/documents/shipments/$(request.resource.data.shipmentId)).data.resi == resi;
+    }
+    match /shipments/{id} {
+      allow read: if admin() || assigned(resource.data);
+      allow create: if admin()
+        && request.resource.data.keys().hasOnly(['resi', 'penerima', 'phone', 'alamat', 'sender', 'weight', 'pieces', 'notes', 'courierId', 'courierEmail', 'status', 'createdBy', 'createdAt', 'updatedAt', 'updatedBy'])
+        && request.resource.data.resi.matches('^[A-Z0-9-]{4,40}$')
+        && validFields(request.resource.data) && request.resource.data.status == 'Pending'
+        && request.resource.data.createdBy == request.auth.uid && request.resource.data.updatedBy == request.auth.uid
+        && request.resource.data.createdAt == request.time && request.resource.data.updatedAt == request.time
+        && getAfter(/databases/$(database)/documents/resi_index/$(request.resource.data.resi)).data.shipmentId == id;
+      allow delete: if false;
+      allow update: if request.resource.data.updatedBy == request.auth.uid && request.resource.data.updatedAt == request.time && (
+        (admin() && resource.data.status == 'Pending' && (
+          (request.resource.data.status == 'Pending' && validFields(request.resource.data)
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['penerima', 'phone', 'alamat', 'sender', 'weight', 'pieces', 'notes', 'courierId', 'courierEmail', 'updatedAt', 'updatedBy']))
+          || (request.resource.data.status == 'Batal' && text(request.resource.data.cancelReason, 5, 1000)
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'cancelReason', 'updatedAt', 'updatedBy']))
+        ))
+        || (admin() && resource.data.status in ['Proses','Tertunda']
+          && request.resource.data.issueResolvedAt == request.time
+          && text(request.resource.data.resolutionNote,5,1000)
+          && (
+            (request.resource.data.status == 'Pending' && validFields(request.resource.data)
+              && request.resource.data.startedAt == null && request.resource.data.issue == ''
+              && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','courierId','courierEmail','startedAt','issue','resolutionNote','issueResolvedAt','updatedAt','updatedBy']))
+            || (request.resource.data.status == 'Retur'
+              && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','resolutionNote','issueResolvedAt','updatedAt','updatedBy']))
+          ))
+        || (assigned(resource.data) && (
+          (resource.data.status == 'Pending' && request.resource.data.status == 'Proses'
+            && request.resource.data.startedAt == request.time
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'startedAt', 'updatedAt', 'updatedBy']))
+          || (resource.data.status == 'Proses' && request.resource.data.status in ['Proses','Tertunda']
+            && text(request.resource.data.issue, 5, 1000)
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['issue','status', 'updatedAt', 'updatedBy']))
+        ))
+      );
+      // Completion is callable-only: the server checks the actual Storage objects.
+      match /events/{eventId} {
+        function shipment() { return get(/databases/$(database)/documents/shipments/$(id)).data; }
+        allow read: if admin() || assigned(shipment());
+        allow update, delete: if false;
+        allow create: if false;
+      }
+    }
+    match /courier_locations/{uid} {
+      allow get: if admin() || (courier() && request.auth.uid == uid);
+      allow list: if admin();
+      allow delete: if false;
+      allow create, update: if courier() && request.auth.uid == uid
+        && request.resource.data.courierId == uid
+        && request.resource.data.keys().hasOnly(['courierId', 'email', 'latitude', 'longitude', 'accuracy', 'heading', 'speed', 'fixAt', 'updatedAt', 'isTracking', 'stoppedAt'])
+        && ((request.resource.data.isTracking == true
+          && request.resource.data.email == request.auth.token.email
+          && request.resource.data.latitude is number && request.resource.data.latitude >= -90 && request.resource.data.latitude <= 90
+          && request.resource.data.longitude is number && request.resource.data.longitude >= -180 && request.resource.data.longitude <= 180
+          && request.resource.data.accuracy is number && request.resource.data.accuracy >= 0
+          && request.resource.data.fixAt is timestamp
+          && request.resource.data.fixAt <= request.time + duration.value(2, 'm')
+          && (!exists(/databases/$(database)/documents/courier_locations/$(uid))
+            || request.resource.data.fixAt >= resource.data.get('fixAt', request.resource.data.fixAt))
+          && request.resource.data.updatedAt == request.time)
+        || (request.resource.data.isTracking == false && request.resource.data.stoppedAt == request.time
+          && (!exists(/databases/$(database)/documents/courier_locations/$(uid)) || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['courierId', 'isTracking', 'stoppedAt']))));
+    }
+  }
+}

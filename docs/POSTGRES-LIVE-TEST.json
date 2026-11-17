@@ -1,0 +1,29 @@
+{
+  "at": "2026-10-31T11:01:09.206Z",
+  "endpoint": "https://haryata-api-production.up.railway.app",
+  "database": "postgresql",
+  "passed": 14,
+  "checks": [
+    "endpoint Railway menghubungkan PostgreSQL",
+    "akses tanpa login ditolak",
+    "akun admin bootstrap dapat login dan membaca profil",
+    "pembuatan kurir dan pembatasan menu admin",
+    "transaksi PostgreSQL menolak resi duplikat bersamaan",
+    "pencarian resi dan isolasi data antarkurir",
+    "pengantaran aktif mencegah logout dan penonaktifan kurir",
+    "lokasi kurir tersimpan, tampil pada admin, dan menolak sampel lama/invalid/kurir lain",
+    "tiga foto BYTEA dapat diunggah/dibaca, penyelesaian idempoten dan bukti dilindungi",
+    "tunda, pengantaran ulang, retur dan batal tersimpan dengan audit",
+    "laporan periode dan riwayat diambil dari PostgreSQL",
+    "menghentikan GPS mempertahankan koordinat terakhir tanpa label live",
+    "penonaktifan akun mencabut sesi",
+    "ubah/reset sandi dan pencabutan token berfungsi"
+  ],
+  "sampleResis": [
+    "HC-MVWAIQLT-SELESAI",
+    "HC-MVWAIQLT-PENDING",
+    "HC-MVWAIQLT-RETUR",
+    "HC-MVWAIQLT-BATAL"
+  ],
+  "note": "Data contoh otomatis, koordinat bukan GPS fisik; status lokasi sudah berhenti."
+}

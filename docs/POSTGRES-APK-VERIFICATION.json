@@ -1,0 +1,15 @@
+{
+  "version": "1.2.0+3",
+  "signatureValid": true,
+  "certificateSha1": "33C43FAA63CD19ABF50CB0C6DB2B2816C28B2C6F",
+  "apiEndpointPackaged": true,
+  "mapsKeyPackaged": true,
+  "firebasePluginAbsent": true,
+  "firebaseInitProviderAbsent": true,
+  "mainActivityInDex": true,
+  "flutterEngineAbis": [
+    "arm64-v8a"
+  ],
+  "sizeBytes": 91440918,
+  "sha256": "04DC08996C7D8D03AF12443309D82B32856F8AD8B444675A463CD882AEA82B85"
+}
